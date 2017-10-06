@@ -16,6 +16,13 @@ function BineryOrderTree() {
   this.postOrderTraverse = function(callback) {
     postOrderTraverseNode(root, callback)
   }
+  this.search = function(val) {
+    searchNode(root, val);
+  }
+  this.remove = function(val) {
+    if(root===null)return null;
+    removeNode(root, val)
+  }
 }
 
 // Creating node
@@ -74,10 +81,73 @@ function callback(val) {
   console.log(val);
 }
 
+// Search Node
+function searchNode(node, val) {
+  if(node === null) {
+    console.log(val + ' is not here')
+  }else {
+    if(val < node.val) {
+      searchNode(node.left,val)
+    }else if(val > node.val) {
+      searchNode(node.right, val)
+    }else{
+      console.log('Yes, find it! This is '+ node.val)
+    }
+  }
+}
+
+// Remove Node
+function removeNode(node, val) {
+  if(node === null) return null;
+  if(val < node.val) {
+    node.left = removeNode(node.left, val)
+  }else if(val > node.val) {
+    node.right = removeNode(node.right, val)
+  }else {
+    if(node.left === null && node.right === null){
+      node = null;
+      return node;
+    }else if(node.right === null) {
+      node = node.left;
+      return node;
+    }else if(node.left === null) {
+      node = node.right;
+      return node;
+    }else {
+      var axu = minNode(node.right);
+      node.val = axu.val;
+      removeNode(node.right, axu.val)
+      return node;
+    }
+  }
+}
+
+// The minimum node
+function minNode(node) {
+ if(node) {
+   while(node && node.left !== null) {
+     node = node.left
+   }
+   return node;
+ }
+}
+
+
+// The maximum node
+function maxNode(node) {
+  if(node) {
+    while(node && node.right !== null){
+      node = node.right;
+    }
+    return node;
+  }
+}
+
+
 //------------------------------------------------test--------------------------------------
 
 // Creation a binery order tree
-var nodes = [8,3,10,1,6,14,4,7,13];
+var nodes = [8,3,10,1,2,6,14,4,7,13];
 var bineryOrderTree = new BineryOrderTree();
 nodes.forEach(function(val){
   bineryOrderTree.insert(val);
@@ -93,3 +163,14 @@ bineryOrderTree.inOrderTraverse(callback)
 
 console.log('----------------Parents in the end traverse-----------------')
 bineryOrderTree.postOrderTraverse(callback)
+
+console.log('----------------Search Node-----------------')
+bineryOrderTree.search(3);
+bineryOrderTree.search(43);
+
+
+console.log('----------------Remove Node-----------------')
+bineryOrderTree.remove(3);
+
+console.log('----------------Parents in the middle traverse-----------------')
+bineryOrderTree.inOrderTraverse(callback)
